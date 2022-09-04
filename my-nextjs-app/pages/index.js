@@ -1,20 +1,26 @@
 import Layout from "../components/Layout";
 import Link from "next/link";
 
-const ProfileLink = props => (
-    <div>
-        <Link href={`/p/[profile]`} as={`/p/${props.profile}`}>
-            <a>Go to {props.profile}`s profile</a>
-        </Link>
-    </div>
-);
+const rowStyle = {
+    padding: 20,
+    borderBottom: "1px solid #DDD",
+};
 
 const Home = (props) => (
     <Layout>
-        <h1>Friends List {props.profiles[0]}</h1>
+        <h1>Friends List</h1>
         {
             props.profiles.map((profile, index) => (
-                <ProfileLink key={index} profile={profile}/>
+                <div key={index} style={rowStyle}>
+                    <Link href={{
+                        pathname: `/p/[profile]`,
+                        query: {post: JSON.stringify(profile)},
+                    }}
+                          as={`/p/${profile.name}`}
+                          passHref>
+                        <a>Go to {profile.username}`s profile</a>
+                    </Link>
+                </div>
             ))
         }
     </Layout>
@@ -23,9 +29,9 @@ const Home = (props) => (
 Home.getInitialProps = async function () {
     const res = await fetch("https://jsonplaceholder.typicode.com/users");
     const data = await res.json();
-
     return {
-        profiles: data.map(item => item.name)
+        profiles: data
     };
 };
+
 export default Home;
